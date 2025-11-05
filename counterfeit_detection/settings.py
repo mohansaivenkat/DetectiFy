@@ -26,8 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = os.getenv("DEBUG") == "True"
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
-
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -146,18 +145,17 @@ LOGOUT_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
 
 # Email backend for production
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp-relay.brevo.com")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True") == "True"
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
-# Example for Gmail SMTP
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")       # your Gmail address
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")      # NOT your Gmail password, use App Password
-
-# Where contact form messages should go
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-CONTACT_RECEIVER_EMAIL = EMAIL_HOST_USER  # where you'll receive messages
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+CONTACT_RECEIVER_EMAIL = EMAIL_HOST_USER
 
 AUTHENTICATION_BACKENDS = [
     'core.backends.EmailOrUsernameModelBackend',  # our custom backend
