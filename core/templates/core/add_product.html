@@ -1,0 +1,62 @@
+{% extends "core/base.html" %}
+{% block title %}Add Product | DetectiFy{% endblock %}
+
+{% block content %}
+<div class="neo-card max-w-2xl mx-auto mt-16 p-8">
+  <h2 class="text-3xl font-bold mb-6 flex items-center justify-center gap-2">
+    <span class="material-icons text-[var(--btn-bg)] text-5xl">add_box</span>
+    Add Genuine Product
+  </h2>
+
+  <form method="POST" enctype="multipart/form-data" class="space-y-5">
+    {% csrf_token %}
+    
+    {% for field in form %}
+      <div class="flex flex-col">
+        <label for="{{ field.id_for_label }}" class="font-semibold mb-1 text-[var(--text-color)]">
+          {{ field.label }}
+        </label>
+        {{ field }}
+        {% if field.help_text %}
+          <small class="text-xs opacity-70">{{ field.help_text|safe }}</small>
+        {% endif %}
+        {% if field.errors %}
+          <p class="text-red-500 text-sm mt-1">{{ field.errors|striptags }}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <button type="submit" class="neo-btn neo-btn-primary w-full py-2 font-bold text-lg">
+      Add Product
+    </button>
+  </form>
+</div>
+
+<style>
+input, textarea, select {
+  background: var(--card-bg);
+  border: 3px solid var(--border-color);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: var(--text-color);
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--btn-bg);
+  box-shadow: 4px 4px 0 var(--border-color);
+  transform: translate(-2px, -2px);
+}
+
+label {
+  font-weight: 600;
+}
+
+button.neo-btn-primary:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--border-color);
+}
+</style>
+{% endblock %}

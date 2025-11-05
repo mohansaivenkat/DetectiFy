@@ -1,0 +1,295 @@
+{% extends "core/base.html" %} 
+{% block title %}Verify Product | DetectiFy
+{%endblock %} {% block content %}
+<div
+  id="verify-root"
+  class="neo-card max-w-2xl mx-auto p-6 sm:p-8 mt-8 sm:mt-12"
+  data-has-result="{% if result %}1{% else %}0{% endif %}"
+>
+  <h2
+    class="text-2xl sm:text-3xl font-bold mb-6 flex items-center gap-2 justify-center"
+  >
+    <span class="material-icons text-[var(--btn-bg)] text-4xl sm:text-5xl"
+      >qr_code_scanner</span
+    >
+    Verify Product
+  </h2>
+
+  <!-- Verification Form -->
+  <form id="verify-form" method="POST" class="space-y-5">
+    {% csrf_token %}
+
+    <div class="flex flex-col">
+      <label
+        for="id_serial_number"
+        class="font-semibold mb-2 text-[var(--text-color)]"
+      >
+        Enter Serial Number or Scan QR Code
+      </label>
+      {{ form.serial_number }}
+    </div>
+
+    <!-- Scanner Wrap (hidden when a result exists) -->
+    <div id="scanner-wrap" class="space-y-3 {% if result %}hidden{% endif %}">
+      <div
+        id="qr-reader"
+        class="rounded-xl border-4 border-[var(--border-color)] shadow-lg overflow-hidden min-h-[260px]"
+      ></div>
+      <p id="qr-hint" class="text-center text-sm opacity-70">
+        Point your camera at a QR/serial code. We’ll fill it for you.
+      </p>
+    </div>
+
+    <!-- Post-scan banner (only shown after a QR is captured before submit) -->
+    <div
+      id="scan-banner"
+      class="hidden rounded-xl p-4 border-4"
+      style="border-color: var(--border-color); background: var(--card-bg)"
+    >
+      <div class="flex items-start sm:items-center gap-3">
+        <span
+          class="material-icons text-3xl sm:text-4xl"
+          style="color: var(--btn-bg)"
+          >verified</span
+        >
+        <div class="text-sm sm:text-base">
+          <p class="font-semibold">QR detected</p>
+          <p class="opacity-80">
+            The serial number has been filled. You can press
+            <strong>Verify</strong> now.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+      <button
+        type="submit"
+        class="neo-btn neo-btn-primary w-full py-2.5 font-bold text-base"
+      >
+        Verify
+      </button>
+      <!-- Verify again button appears when result exists OR after a scan -->
+      <button
+        id="verify-again"
+        type="button"
+        class="neo-btn w-full py-2.5 font-bold text-base {% if not result %}hidden{% endif %}"
+      >
+        QR Scan
+      </button>
+    </div>
+  </form>
+
+  <!-- Results -->
+  {% if result %}
+
+  <!-- COUNTERFEIT PRODUCT RESULT -->
+  {% if result.status == 'counterfeit' %}
+  <div
+    class="mt-8 p-6 rounded-2xl border-4"
+    style="border-color: #ef4444; background: var(--card-bg)"
+  >
+    <div class="text-center space-y-4">
+      <span class="material-icons text-red-500 text-6xl">dangerous</span>
+      <h3 class="text-2xl font-bold text-red-500">Counterfeit Product</h3>
+      <p class="opacity-80">
+        This product has been reported and confirmed as counterfeit. Please
+        avoid usage or purchase.
+      </p>
+
+      {% if result.product.image %}
+      <img
+        src="{{ result.product.image.url }}"
+        class="w-full max-h-[60vh] object-contain rounded-xl border-4 border-red-500 shadow-lg"
+      />
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- GENUINE PRODUCT RESULT -->
+  {% elif result.status == 'genuine' %}
+  <div
+    class="mt-8 p-6 rounded-2xl border-4"
+    style="border-color: var(--border-color); background: var(--card-bg)"
+  >
+    <div class="flex flex-col items-center text-center space-y-4">
+      <span class="material-icons text-green-500 text-6xl">verified</span>
+      <h3 class="text-2xl font-bold text-[var(--text-color)]">
+        Genuine Product
+      </h3>
+      <p class="opacity-80">This product is verified as genuine.</p>
+
+      {% if result.product.image %}
+      <img
+        src="{{ result.product.image.url }}"
+        class="w-full max-h-[60vh] object-contain rounded-xl border-4 border-[var(--border-color)] shadow-md"
+      />
+      {% endif %}
+
+      <div class="text-center">
+        <p class="font-semibold">{{ result.product.product_name }}</p>
+        <p class="opacity-70">{{ result.product.manufacturer }}</p>
+        <p class="text-sm opacity-70">
+          Serial: {{ result.product.serial_number }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- UNKNOWN PRODUCT -->
+  {% elif result.status == 'unknown' %}
+  <div
+    class="mt-8 p-6 rounded-2xl border-4"
+    style="border-color: var(--border-color); background: var(--card-bg)"
+  >
+    <div class="text-center space-y-4">
+      <span class="material-icons text-yellow-500 text-6xl">warning</span>
+      <h3 class="text-2xl font-bold text-[var(--text-color)]">
+        Unverified Product
+      </h3>
+      <p class="opacity-80">
+        No record found for the entered serial number. It may be counterfeit or
+        unregistered.
+      </p>
+      <p class="text-sm opacity-70">
+        Serial Attempted: <strong>{{ result.serial }}</strong>
+      </p>
+    </div>
+  </div>
+  {% endif %} {% endif %}
+</div>
+
+<!-- QR Scanner Script -->
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script>
+  (function () {
+    const root = document.getElementById("verify-root");
+    const hasResult = root?.dataset?.hasResult === "1";
+
+    const scannerWrap = document.getElementById("scanner-wrap");
+    const scanBanner = document.getElementById("scan-banner");
+    const verifyAgainBtn = document.getElementById("verify-again");
+    const serialInput = document.getElementById("id_serial_number");
+    const form = document.getElementById("verify-form");
+
+    let html5QrCode = null;
+    let scannerActive = false;
+
+    function show(el) {
+      if (el) el.classList.remove("hidden");
+    }
+    function hide(el) {
+      if (el) el.classList.add("hidden");
+    }
+
+    function stopScanner() {
+      if (html5QrCode && scannerActive) {
+        html5QrCode
+          .stop()
+          .then(() => html5QrCode.clear())
+          .catch(() => {}) // ignore stop errors
+          .finally(() => {
+            scannerActive = false;
+          });
+      }
+    }
+
+    function startScanner() {
+      const readerEl = document.getElementById("qr-reader");
+      if (!readerEl) return;
+      try {
+        html5QrCode = new Html5Qrcode("qr-reader");
+        html5QrCode
+          .start(
+            { facingMode: "environment" },
+            { fps: 10, qrbox: { width: 240, height: 240 } },
+            onScanSuccess,
+            onScanError
+          )
+          .then(() => {
+            scannerActive = true;
+          });
+      } catch (e) {
+        // If camera fails, just keep manual entry
+        console.warn("QR start error:", e);
+      }
+    }
+
+    function onScanSuccess(decodedText) {
+      serialInput.value = decodedText;
+      hide(scannerWrap);
+      show(scanBanner);
+      show(verifyAgainBtn);
+      stopScanner();
+    }
+
+    function onScanError(_) {
+      // Swallow errors to avoid console spam
+    }
+
+    // Verify again -> reset UI and scanner
+    verifyAgainBtn?.addEventListener("click", () => {
+      // Keep the last serial or clear if you prefer:
+      // serialInput.value = '';
+      hide(scanBanner);
+      show(scannerWrap);
+      startScanner();
+    });
+
+    // Don’t keep camera open while submitting / after result
+    form?.addEventListener("submit", () => {
+      stopScanner();
+    });
+
+    // Auto-start scanner only when no server-side result yet
+    if (!hasResult) {
+      show(scannerWrap);
+      hide(scanBanner);
+      // Delay a tick so layout is ready
+      setTimeout(startScanner, 0);
+    } else {
+      // There is a result; ensure scanner hidden and offer Verify Again
+      hide(scannerWrap);
+      show(verifyAgainBtn);
+    }
+
+    // Cleanup on page unload/navigation
+    window.addEventListener("beforeunload", stopScanner);
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stopScanner();
+    });
+  })();
+</script>
+
+<style>
+  /* Minor mobile polish for the scanner pane */
+  #qr-reader {
+    background: var(--card-bg);
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+  }
+  #qr-reader video {
+    border-radius: 0.75rem;
+  }
+
+  /* Make the form input fully theme-aligned if not already via widget attrs */
+  #id_serial_number {
+    background: var(--card-bg);
+    border: 3px solid var(--border-color);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: var(--text-color);
+    font-weight: 500;
+    transition: all 0.25s ease;
+    width: 100%;
+  }
+  #id_serial_number:focus {
+    outline: none;
+    border-color: var(--btn-bg);
+    box-shadow: 4px 4px 0 var(--border-color);
+    transform: translate(-2px, -2px);
+  }
+</style>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "core/base.html" %}
+{% block title %}Reports Review — DetectiFy{% endblock %}
+
+{% block content %}
+<div class="neo-card max-w-6xl mx-auto p-6">
+  <h2 class="text-3xl font-bold mb-6 flex items-center gap-2">
+    <span class="material-symbols-outlined text-[var(--btn-bg)]">flag</span>
+    Pending Counterfeit Reports
+  </h2>
+
+  {% if messages %}
+    <div class="mb-4">
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if reports %}
+  <div class="overflow-x-auto">
+    <table class="min-w-full text-sm">
+      <thead>
+        <tr>
+          <th class="p-3 text-left">ID</th>
+          <th class="p-3 text-left">Serial</th>
+          <th class="p-3 text-left">Name</th>
+          <th class="p-3 text-left">Reporter</th>
+          <th class="p-3 text-left">Submitted</th>
+          <th class="p-3 text-left">Evidence</th>
+          <th class="p-3 text-left">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in reports %}
+        <tr class="border-t" style="border-color: var(--border-color)">
+          <td class="p-3 font-semibold">#{{ r.id }}</td>
+          <td class="p-3">{{ r.product_serial|default:"—" }}</td>
+          <td class="p-3">{{ r.product_name|default:"—" }}</td>
+          <td class="p-3">{{ r.reporter|default:"Anonymous" }}</td>
+          <td class="p-3">{{ r.reported_at|date:"M d, Y H:i" }}</td>
+          <td class="p-3">
+            {% if r.evidence_image %}
+              <a href="{{ r.evidence_image.url }}" target="_blank" class="neo-btn text-xs">View</a>
+            {% else %} — {% endif %}
+          </td>
+          <td class="p-3">
+            <div class="flex gap-2">
+              <form method="post" action="{% url 'approve_report' r.id %}">
+                {% csrf_token %}
+                <button class="neo-btn bg-red-600 text-xs">Fake</button>
+              </form>
+              <form method="post" action="{% url 'reject_report' r.id %}">
+                {% csrf_token %}
+                <button class="neo-btn bg-green-600 text-xs">Real</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <div class="text-center opacity-80">
+      No pending reports.
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

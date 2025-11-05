@@ -1,0 +1,108 @@
+{% extends "core/base.html" %}
+{% block title %}Report Counterfeit | DetectiFy{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto mt-8 p-6">
+
+  <!-- Page Title -->
+  <div class="text-center mb-10">
+    <h2 class="text-3xl font-extrabold flex items-center justify-center gap-2">
+        
+      <span class="material-symbols-outlined text-[var(--btn-bg)] text-5xl">report</span>
+       
+      Report Counterfeit Product
+        
+    </h2>
+    <p class="opacity-75 mt-2 text-sm md:text-base">
+      If you suspect a product is fake, report it here with details & evidence. Our team will review it.
+    </p>
+  </div>
+
+  <!-- Report Form -->
+  <div class="neo-card p-8 mb-12">
+    <form method="POST" enctype="multipart/form-data" class="space-y-5">
+      {% csrf_token %}
+
+      {% for field in form %}
+        <div class="flex flex-col">
+          <label for="{{ field.id_for_label }}" class="font-semibold mb-1 text-[var(--text-color)]">
+            {{ field.label }}
+          </label>
+          {{ field }}
+          {% if field.help_text %}
+            <small class="text-xs opacity-70">{{ field.help_text|safe }}</small>
+          {% endif %}
+          {% if field.errors %}
+            <p class="text-red-500 text-sm mt-1">{{ field.errors|striptags }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      <button type="submit" class="neo-btn neo-btn-primary w-full py-2 font-bold text-lg">
+        Submit Report
+      </button>
+    </form>
+  </div>
+
+  <!-- User Report History -->
+  {% if reports %}
+  <h3 class="text-2xl font-bold mb-6">Your Submitted Reports</h3>
+
+  <div class="grid md:grid-cols-2 gap-6">
+    {% for r in reports %}
+      <div class="neo-card p-5 flex flex-col justify-between">
+
+        <div>
+          <h4 class="text-lg font-semibold">{{ r.product_name|default:"Unknown Product" }}</h4>
+          <p class="text-sm opacity-70">Serial: {{ r.product_serial|default:"N/A" }}</p>
+          <p class="text-sm mt-3 opacity-80">{{ r.description }}</p>
+        </div>
+
+        {% if r.evidence_image %}
+          <div class="mt-4">
+            <img src="{{ r.evidence_image.url }}" alt="Evidence Image" class="w-full rounded-lg border-2 border-[var(--border-color)] object-cover" />
+          </div>
+        {% endif %}
+
+        <div class="mt-4 text-sm flex justify-between opacity-70">
+          <span>Filed: {{ r.reported_at|date:"M j, Y" }}</span>
+
+          {% if r.resolved %}
+            <span class="text-green-500 font-semibold">Reviewed</span>
+          {% else %}
+            <span class="text-yellow-500 font-semibold">Pending Review</span>
+          {% endif %}
+        </div>
+
+      </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+    <p class="text-center opacity-70 mt-10">You haven't submitted any reports yet.</p>
+  {% endif %}
+</div>
+
+<style>
+input, textarea, select {
+  background: var(--card-bg);
+  border: 3px solid var(--border-color);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: var(--text-color);
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--btn-bg);
+  box-shadow: 4px 4px 0 var(--border-color);
+  transform: translate(-2px, -2px);
+}
+
+label {
+  font-weight: 600;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends "core/base.html" %} {% block title %}Counterfeit Products —
+DetectiFy{% endblock %} {% block content %}
+<section class="max-w-7xl mx-auto px-6 py-10">
+  <!-- Header -->
+  <div class="text-center mb-12">
+    <div class="flex justify-center items-center gap-3 mb-4">
+      <span class="material-symbols-outlined text-red-500 text-5xl"
+        >report</span
+      >
+      <h2 class="text-2xl md:text-3xl font-extrabold text-red-500">
+        Counterfeit Products
+      </h2>
+    </div>
+    <p
+      class="opacity-80 text-base md:text-lg max-w-2xl mx-auto text-[var(--text-color)]"
+    >
+      The following items were reported and
+      <strong>approved by admin</strong> as counterfeit. Avoid purchasing or
+      using them.
+    </p>
+  </div>
+
+  {% if reports and reports.paginator.count %}
+  <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    {% for rep in reports %}
+    <div class="neo-card relative border-red-500" style="border-width: 4px">
+      <div
+        class="absolute top-3 right-3 bg-red-600 text-white px-2 py-1 rounded text-xs font-bold uppercase shadow"
+      >
+        Fake / Counterfeit
+      </div>
+
+      <div class="flex flex-col items-center p-4 text-center">
+        {% if rep.evidence_image %}
+        <img
+          src="{{ rep.evidence_image.url }}"
+          class="h-48 w-auto object-contain rounded mb-4"
+        />
+
+        {% elif rep.fallback_product and rep.fallback_product.image %}
+        <img
+          src="{{ rep.fallback_product.image.url }}"
+          class="h-48 w-auto object-contain rounded mb-4"
+        />
+
+        {% else %}
+        <div
+          class="h-48 w-full flex items-center justify-center bg-[var(--border-color)] rounded mb-4"
+        >
+          <span class="material-symbols-outlined text-5xl opacity-50"
+            >image_not_supported</span
+          >
+        </div>
+        {% endif %}
+
+        <h3 class="text-xl font-bold text-[var(--text-color)]">
+          {{ rep.product_name|default:"Unknown Product" }}
+        </h3>
+        {% if rep.product_serial %}
+        <p class="text-xs mt-1 opacity-70">
+          Serial: <strong>{{ rep.product_serial }}</strong>
+        </p>
+        {% endif %} {% if rep.admin_notes %}
+        <p class="text-sm mt-2 opacity-80">{{ rep.admin_notes }}</p>
+        {% endif %}
+
+        <a
+          href="{% url 'verify' %}?serial={{ rep.product_serial }}"
+          class="neo-btn w-full mt-4 flex items-center justify-center gap-2"
+          style="background: #ef4444; color: #fff; border-color: #fecaca"
+        >
+          <span class="material-symbols-outlined">search</span> Verify Info
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  {% if reports.paginator.num_pages > 1 %}
+  <div class="flex items-center justify-center gap-2 mt-8">
+    {% if reports.has_previous %}
+    <a href="?page={{ reports.previous_page_number }}" class="neo-btn px-3 py-1"
+      >Prev</a
+    >
+    {% endif %}
+    <span class="px-3 py-1 border-2 rounded-md">
+      Page {{ reports.number }} of {{ reports.paginator.num_pages }}
+    </span>
+    {% if reports.has_next %}
+    <a href="?page={{ reports.next_page_number }}" class="neo-btn px-3 py-1"
+      >Next</a
+    >
+    {% endif %}
+  </div>
+  {% endif %} {% else %}
+  <div class="text-center opacity-80 mt-12">
+    <span class="material-symbols-outlined text-7xl text-red-500 mb-4"
+      >gpp_maybe</span
+    >
+    <h3 class="text-2xl font-bold text-[var(--text-color)] mb-2">
+      No Approved Counterfeit Reports
+    </h3>
+    <p class="text-[var(--text-secondary)]">
+      Great news! No reports have been approved as counterfeit yet.
+    </p>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

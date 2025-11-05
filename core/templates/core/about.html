@@ -1,0 +1,70 @@
+{% extends "core/base.html" %}
+{% block title %}About Us | DetectiFy{% endblock %}
+
+{% block content %}
+<section class=" max-w-5xl mx-auto">
+  <div class="flex flex-col md:flex-row items-start gap-8">
+    
+   
+    <!-- Main Info Section -->
+    <div class="flex-1">
+      <h2 class="text-2xl md:text-3xl text-teal-600 font-extrabold mb-3">About DetectiFy</h2>
+      <p class="text-lg leading-relaxed opacity-90">
+        <strong>DetectiFy</strong> is an initiative built to help individuals and businesses identify and report fake or counterfeit products. 
+        Our system leverages QR verification, image recognition, and unique serial number validation to ensure the authenticity of items across industries.
+      </p>
+
+      <div class="mt-6 grid sm:grid-cols-2 gap-6">
+        <!-- Feature 1 -->
+        <div class="p-5 border-4 border-[var(--border-color)] bg-[var(--card-bg)] rounded-xl shadow-lg hover:-translate-y-1 transition-transform duration-200">
+          <span class="material-icons text-4xl text-[var(--btn-bg)] mb-2">search</span>
+          <h3 class="font-bold text-xl mb-1">Smart Product Verification</h3>
+          <p class="opacity-80">
+            Verify product authenticity using serial numbers, barcodes, or image-based analysis with high accuracy.
+          </p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="p-5 border-4 border-[var(--border-color)] bg-[var(--card-bg)] rounded-xl shadow-lg hover:-translate-y-1 transition-transform duration-200">
+          <span class="material-icons text-4xl text-[var(--btn-bg)] mb-2">report_problem</span>
+          <h3 class="font-bold text-xl mb-1">Easy Reporting</h3>
+          <p class="opacity-80">
+            Found a counterfeit item? Quickly report it through our simple form — help keep marketplaces clean.
+          </p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="p-5 border-4 border-[var(--border-color)] bg-[var(--card-bg)] rounded-xl shadow-lg hover:-translate-y-1 transition-transform duration-200">
+          <span class="material-icons text-4xl text-[var(--btn-bg)] mb-2">security</span>
+          <h3 class="font-bold text-xl mb-1">Secure & Transparent</h3>
+          <p class="opacity-80">
+            All verifications are logged securely, ensuring transparency and reliability for both brands and users.
+          </p>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="p-5 border-4 border-[var(--border-color)] bg-[var(--card-bg)] rounded-xl shadow-lg hover:-translate-y-1 transition-transform duration-200">
+          <span class="material-icons text-4xl text-[var(--btn-bg)] mb-2">groups</span>
+          <h3 class="font-bold text-xl mb-1">Community Driven</h3>
+          <p class="opacity-80">
+            Join our growing community of users and brands working together to combat counterfeit products.
+          </p>
+        </div>
+      </div>
+
+      <!-- Mission Statement -->
+      <div class="mt-8 p-6 border-4 border-[var(--border-color)] rounded-xl bg-[var(--card-bg)] shadow-lg">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="material-icons text-3xl text-[var(--btn-bg)]">lightbulb</span>
+          <h3 class="text-2xl font-bold">Our Mission</h3>
+        </div>
+        <p class="text-lg leading-relaxed opacity-90">
+          Our mission is to <strong>empower consumers</strong> with the tools to verify product authenticity instantly 
+          and <strong>support brands</strong> in maintaining trust and credibility. 
+          We aim to build a transparent ecosystem where every product tells a true story.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

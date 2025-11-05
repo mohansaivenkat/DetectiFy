@@ -1,0 +1,71 @@
+{% extends "core/base.html" %}
+{% block title %}Register | DetectiFy{% endblock %}
+
+{% block content %}
+<div class="neo-card max-w-md mx-auto mt-16 p-8">
+  <h2 class="text-3xl font-bold mb-6 flex items-center justify-center gap-2">
+    <span class="material-icons text-[var(--btn-bg)] text-5xl">person_add</span>
+    Create an Account
+  </h2>
+
+  <form method="POST" class="space-y-5">
+    {% csrf_token %}
+    
+    {% for field in form %}
+      <div class="flex flex-col">
+        <label for="{{ field.id_for_label }}" class="font-semibold mb-1 text-[var(--text-color)]">
+          {{ field.label }}
+        </label>
+        {{ field }}
+        {% if field.help_text %}
+          <small class="text-xs opacity-70">{{ field.help_text|safe }}</small>
+        {% endif %}
+        {% if field.errors %}
+          <p class="text-red-500 text-sm mt-1">{{ field.errors|striptags }}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <button type="submit" class="neo-btn neo-btn-primary w-full py-2 font-bold text-lg">
+      Register
+    </button>
+  </form>
+
+  <p class="mt-6 text-sm text-center opacity-80">
+    Already have an account?
+    <a href="{% url 'login' %}" class="text-[var(--btn-bg)] font-semibold hover:underline">
+      Login
+    </a>
+  </p>
+</div>
+
+<style>
+/* Smooth neobrutalism styling consistent with your dark/light mode */
+input, select, textarea {
+  background: var(--card-bg);
+  border: 3px solid var(--border-color);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: var(--text-color);
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--btn-bg);
+  box-shadow: 4px 4px 0 var(--border-color);
+  transform: translate(-2px, -2px);
+}
+
+/* Field alignment and hover animation */
+label {
+  font-weight: 600;
+}
+
+button.neo-btn-primary:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--border-color);
+}
+</style>
+{% endblock %}

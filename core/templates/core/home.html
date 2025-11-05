@@ -1,0 +1,272 @@
+{% extends 'core/base.html' %} {% block title %}Home | DetectiFy{% endblock %}
+{% block extra_css %}
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+/>
+<style>
+  .material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  }
+  body,
+  .neo-card,
+  .neo-btn {
+    transition: background-color 0.4s ease, color 0.4s ease,
+      border-color 0.4s ease;
+  }
+
+  /* Match feature cards with theme variables */
+  .feature-card {
+    background: var(--card-bg);
+    border: 3px solid var(--border-color);
+    color: var(--text-color);
+    box-shadow: 6px 6px 0 rgba(63, 63, 70, 0.3);
+    border-radius: 0.75rem;
+    padding: 1.75rem;
+    transition: all 0.25s ease;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .feature-icon {
+    background: var(--bg-color);
+    border: 2px solid var(--border-color);
+    color: var(--text-color);
+  }
+</style>
+{% endblock %} {% block content %}
+<section class="grid gap-8 lg:grid-cols-2 items-center">
+  <!-- Hero Content -->
+  <div class="space-y-6">
+    <div class="space-y-4">
+      <h1 class="text-2xl lg:text-3xl font-extrabold leading-tight">
+        Detect and Prevent Counterfeit Products
+      </h1>
+      <p class="text-md lg:text-lg opacity-80 leading-relaxed max-w-xl">
+        Verify product authenticity instantly using serial numbers, QR codes, or
+        images. Protect customers and brands.
+      </p>
+    </div>
+
+    <div class="flex flex-wrap justify-left gap-3 sm:gap-4 pt-4 text-center">
+      {% if user.is_authenticated %}
+      <!-- Verify -->
+      <a
+        href="{% url 'verify' %}"
+        class="neo-btn neo-btn-primary flex items-center justify-center gap-2 text-sm sm:text-base px-5 sm:px-6 py-2.5 sm:py-3"
+      >
+        <span class="material-symbols-outlined">verified</span>
+        Verify Product
+      </a>
+
+      <!-- Report -->
+      <a
+        href="{% url 'report' %}"
+        class="neo-btn flex items-center justify-center gap-2 text-sm sm:text-base px-5 sm:px-6 py-2.5 sm:py-3"
+      >
+        <span class="material-symbols-outlined">report</span>
+        Report Counterfeit
+      </a>
+
+      <!-- Add Product (Admin Only) -->
+      {% if user.is_staff %}
+      <a
+        href="{% url 'add_product' %}"
+        class="neo-btn flex items-center justify-center gap-2 text-sm sm:text-base px-5 sm:px-6 py-2.5 sm:py-3"
+      >
+        <span class="material-symbols-outlined">add_circle</span>
+        Add Product
+      </a>
+      <a
+        href="{% url 'admin_report_queue' %}"
+        class="neo-btn bg-yellow-500 text-black flex items-center justify-center gap-2 text-sm sm:text-base px-5 sm:px-6 py-2.5 sm:py-3"
+      >
+        <span class="material-symbols-outlined">check</span>
+        Approve Counterfeit Reports
+      </a>
+      {% endif %} {% else %}
+      <!-- Verify -->
+      <a
+        href="{% url 'verify' %}"
+        class="neo-btn neo-btn-primary flex items-center justify-center gap-2 text-sm sm:text-base px-5 sm:px-6 py-2.5 sm:py-3"
+      >
+        <span class="material-symbols-outlined">verified</span>
+        Verify Product
+      </a>
+
+      <!-- Get Started -->
+      <a
+        href="{% url 'register' %}"
+        class="neo-btn flex items-center justify-center gap-2 text-sm sm:text-base px-5 sm:px-6 py-2.5 sm:py-3"
+      >
+        <span class="material-symbols-outlined">person_add</span>
+        Get Started
+      </a>
+      {% endif %}
+
+      <!-- View Products (Always Visible) -->
+      <a
+        href="{% url 'product_list' %}"
+        class="neo-btn bg-lime-500 text-black flex items-center justify-center gap-2 text-sm sm:text-base px-5 sm:px-6 py-2.5 sm:py-3"
+      >
+        <span class="material-symbols-outlined">inventory_2</span>
+        View Approved Genuine Products
+      </a>
+      <a
+        href="{% url 'counterfeit_products' %}"
+        class="neo-btn bg-red-500 text-black flex items-center justify-center gap-2 text-sm sm:text-base px-5 sm:px-6 py-2.5 sm:py-3"
+      >
+        <span class="material-symbols-outlined">inventory_2</span>
+        View Counterfeit Products
+      </a>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="grid grid-cols-3 gap-4 pt-8">
+      <div
+        class="neo-card text-white bg-rose-500 p-4 text-center hover:scale-105 transition-transform"
+      >
+        <div class="text-3xl font-bold">100%</div>
+        <div class="text-sm opacity-70 mt-1">Verified Products</div>
+      </div>
+      <div
+        class="neo-card text-white bg-emerald-500 p-4 text-center hover:scale-105 transition-transform"
+      >
+        <div class="text-3xl font-bold">98%</div>
+        <div class="text-sm opacity-70 mt-1">Accuracy</div>
+      </div>
+      <div
+        class="neo-card text-white bg-violet-500 p-4 text-center hover:scale-105 transition-transform"
+      >
+        <div class="text-3xl font-bold">50+</div>
+        <div class="text-sm opacity-70 mt-1">Early Registrations</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- How it Works Card -->
+  <div class="neo-card space-y-6">
+    <div class="flex items-center gap-3 mb-4">
+      <div
+        class="w-12 h-12 feature-icon rounded-lg flex items-center justify-center"
+      >
+        <span class="material-symbols-outlined text-3xl">settings</span>
+      </div>
+      <h3 class="text-2xl font-bold">How It Works</h3>
+    </div>
+
+    <ol class="space-y-5">
+      <li class="flex gap-4 items-start">
+        <div
+          class="w-10 h-10 feature-icon font-bold rounded-lg flex items-center justify-center"
+        >
+          1
+        </div>
+        <div>
+          <h4 class="font-bold mb-1">Enter or Scan</h4>
+          <p class="opacity-80 text-sm">
+            Input the serial number, QR code, or upload a product image.
+          </p>
+        </div>
+      </li>
+      <li class="flex gap-4 items-start">
+        <div
+          class="w-10 h-10 feature-icon font-bold rounded-lg flex items-center justify-center"
+        >
+          2
+        </div>
+        <div>
+          <h4 class="font-bold mb-1">System Verification</h4>
+          <p class="opacity-80 text-sm">
+            Our AI checks the registry and returns authenticity status
+            instantly.
+          </p>
+        </div>
+      </li>
+      <li class="flex gap-4 items-start">
+        <div
+          class="w-10 h-10 feature-icon font-bold rounded-lg flex items-center justify-center"
+        >
+          3
+        </div>
+        <div>
+          <h4 class="font-bold mb-1">Report & Protect</h4>
+          <p class="opacity-80 text-sm">
+            Report suspected counterfeits with evidence to protect others.
+          </p>
+        </div>
+      </li>
+    </ol>
+
+    <div class="pt-4 border-t-2" style="border-color: var(--border-color)">
+      <div class="flex items-center gap-2 text-sm opacity-80">
+        <span class="material-symbols-outlined">check_circle</span>
+        <span class="font-semibold">Trusted by people worldwide</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Feature Section -->
+<section class="mt-20">
+  <h2 class="text-3xl lg:text-4xl font-bold text-center mb-12">
+    Why Choose <span style="color: var(--btn-bg)">DetectiFy</span>?
+  </h2>
+
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for feature in features %}
+    <div class="feature-card group">
+      <div
+        class="w-12 h-12 feature-icon rounded-lg flex items-center justify-center mb-4"
+      >
+        <span class="material-symbols-outlined text-3xl"
+          >{{ feature.icon }}</span
+        >
+      </div>
+      <h3 class="text-xl font-bold mb-2">{{ feature.title }}</h3>
+      <p class="opacity-80">{{ feature.description }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="mt-20 mb-10">
+  <div class="neo-card text-center space-y-6">
+    <h2 class="text-3xl lg:text-4xl font-bold">
+      Ready to Protect Your Products?
+    </h2>
+    <p class="text-xl opacity-80 max-w-2xl mx-auto">
+      Join thousands of businesses using DetectiFy to combat counterfeits and
+      protect their brand reputation.
+    </p>
+    <div class="flex flex-wrap gap-4 justify-center pt-4">
+      {% if user.is_authenticated %}
+      <a
+        href="{% url 'verify' %}"
+        class="neo-btn neo-btn-primary text-lg px-8 py-4 flex items-center gap-2"
+      >
+        <span class="material-symbols-outlined">verified</span> Start Verifying
+        Now
+      </a>
+      {% else %}
+      <a
+        href="{% url 'register' %}"
+        class="neo-btn neo-btn-primary text-lg px-8 py-4 flex items-center gap-2"
+      >
+        <span class="material-symbols-outlined">person_add</span> Create Free
+        Account
+      </a>
+      <a
+        href="{% url 'about' %}"
+        class="neo-btn text-lg px-8 py-4 flex items-center gap-2"
+      >
+        <span class="material-symbols-outlined">info</span> Learn More
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}
