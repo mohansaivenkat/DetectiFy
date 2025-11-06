@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "core",
+    "django_cleanup.apps.CleanupConfig",
 ]
 
 MIDDLEWARE = [
@@ -147,30 +148,35 @@ LOGIN_URL = 'login'
 # Email backend for production
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = os.getenv("EMAIL_HOST")
-EMAIL_PORT = int(os.getenv("EMAIL_PORT",587))
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
 EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS") == "True"
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 CONTACT_RECEIVER_EMAIL = EMAIL_HOST_USER
 
 AUTHENTICATION_BACKENDS = [
-    'core.backends.EmailOrUsernameModelBackend',  # our custom backend
-    'django.contrib.auth.backends.ModelBackend',  # keep Django’s default
+    'core.backends.EmailOrUsernameModelBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
-import os
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# (You already have STATIC_URL, keep that as is)
+# Static
 STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"  # add this for collectstatic
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # keep if you have a /static folder
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-# Optional but recommended for cache-busted assets:
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+# ============================
+# MEDIA & CLOUDINARY
+# ============================
+
+USE_CLOUDINARY = os.getenv("USE_CLOUDINARY", "False") == "True"
+
+if USE_CLOUDINARY:
+    INSTALLED_APPS += ["cloudinary", "cloudinary_storage"]
+    DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+    MEDIA_URL = "/media/"
+else:
+    MEDIA_URL = "/media/"
+    MEDIA_ROOT = BASE_DIR / "media"
