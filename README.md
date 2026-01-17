@@ -31,8 +31,8 @@
 1. **Clone the repository:**
 
    ```bash
-   git clone [https://github.com/mohansaivenkat/DetectiFy.git](https://github.com/mohansaivenkat/DetectiFy.git)
-   cd DJANGO_PROJECT
+    git clone [https://github.com/mohansaivenkat/DetectiFy.git](https://github.com/mohansaivenkat/DetectiFy.git)
+    cd DJANGO_PROJECT
 
    ```
 
@@ -50,34 +50,34 @@
 3. **Install Dependencies:**
 
    ```bash
-   pip install -r requirements.txt
+    pip install -r requirements.txt
 
    ```
 
 4. **Environment Configuration:**
 
    ```bash
-   cp .env.example .env
+    cp .env.example .env
 
    ```
 5. **Database Setup:**
 
    ```bash
-python manage.py makemigrations
-python manage.py migrate    
+    python manage.py makemigrations
+    python manage.py migrate    
 
    ```
 6. **Create a Superuser (Optional):**
 
    ```bash
-python manage.py createsuperuser 
+    python manage.py createsuperuser 
 
    ```
 
 7. **Run the Application:**
 
    ```bash
-python manage.py runserver
+    python manage.py runserver
 
    ```
 
