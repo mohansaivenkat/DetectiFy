@@ -31,8 +31,8 @@
 1. **Clone the repository:**
 
    ```bash
-   git clone [https://github.com/your-username/detectify.git](https://github.com/your-username/detectify.git)
-   cd detectify
+   git clone [https://github.com/mohansaivenkat/DetectiFy.git](https://github.com/mohansaivenkat/DetectiFy.git)
+   cd DJANGO_PROJECT
 
    ```
 
@@ -40,14 +40,11 @@
    ```bash
     # Create the environment
     python -m venv venv
-   
 
     # Activate it (Windows)
-
     venv\Scripts\activate
 
     # Activate it (Mac/Linux)
-
     source venv/bin/activate
     ```
 3. **Install Dependencies:**
