@@ -270,7 +270,7 @@ def home(request):
         {"icon": "bolt", "title": "Instant Results", "description": "Get verification results in milliseconds with AI-powered checks."},
         {"icon": "analytics", "title": "Detailed Analytics", "description": "Access comprehensive reports and analytics to track counterfeit patterns."},
         {"icon": "public", "title": "Global Database", "description": "Connected to international product registries for global coverage."},
-        {"icon": "psychology", "title": "AI-Powered", "description": "Machine learning continuously improves detection accuracy."},
+        {"icon": "psychology", "title": "Built-In QR Scanner", "description": "Easily scan product QR codes using your device camera for quick verification."},
         {"icon": "devices", "title": "Multi-Platform", "description": "Access from any device — web, mobile, or integrate via API."},
     ]
     return render(request, "core/home.html", {"features": features})

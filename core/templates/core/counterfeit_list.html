@@ -1,5 +1,20 @@
 {% extends "core/base.html" %} {% block title %}Counterfeit Products —
 DetectiFy{% endblock %} {% block content %}
+<style>
+  .product-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 3rem;
+  }
+
+  .product-description.expanded {
+    -webkit-line-clamp: unset;
+    max-height: none;
+  }
+</style>
 <section class="max-w-7xl mx-auto px-6 py-10">
   <!-- Header -->
   <div class="text-center mb-12">
@@ -60,7 +75,24 @@ DetectiFy{% endblock %} {% block content %}
         <p class="text-xs mt-1 opacity-70">
           Serial: <strong>{{ rep.product_serial }}</strong>
         </p>
-        {% endif %} {% if rep.admin_notes %}
+        {% endif %}
+        
+        {% if rep.description %}
+        <div class="mt-2">
+          <p
+            class="product-description text-xs opacity-70"
+            data-fulltext="{{ rep.description }}"
+          >
+            {{ rep.description }}
+          </p>
+
+          <button class="read-more-btn text-blue-400 text-xs mt-1 invisible">
+            Read More
+          </button>
+        </div>
+        {% endif %} 
+
+        {% if rep.admin_notes %}
         <p class="text-sm mt-2 opacity-80">{{ rep.admin_notes }}</p>
         {% endif %}
 
@@ -107,4 +139,32 @@ DetectiFy{% endblock %} {% block content %}
   </div>
   {% endif %}
 </section>
+<script>
+document.querySelectorAll(".product-description").forEach(desc => {
+    const full = desc.dataset.fulltext.trim();
+
+    // Show Read More only if long text
+    if (full.length > 60) {
+        const btn = desc.parentElement.querySelector(".read-more-btn");
+        btn.classList.remove("invisible");
+
+        btn.addEventListener("click", () => {
+            if (desc.classList.contains("expanded")) {
+                desc.classList.remove("expanded");
+                desc.textContent = full.slice(0, 120) + "...";
+                btn.textContent = "Read More";
+            } else {
+                desc.classList.add("expanded");
+                desc.textContent = full;
+                btn.textContent = "Read Less";
+            }
+        });
+
+        // Start collapsed
+        desc.textContent = full.slice(0, 120) + "...";
+    }
+});
+</script>
+
 {% endblock %}
+

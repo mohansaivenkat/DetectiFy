@@ -23,6 +23,20 @@
     height: 100%;
   }
 
+  .product-description {
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* how many lines to show */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 3rem;
+}
+
+.product-description.expanded {
+  -webkit-line-clamp: unset;
+  max-height: none;
+}
+
   .product-card:hover {
     transform: translate(-4px, -4px);
     box-shadow: 8px 8px 0 var(--border-color);
@@ -142,13 +156,19 @@
         {% endif %}
       </div>
 
-      <div class="product-info text-center mt-3">
-        <h3 class="text-lg font-bold">{{ product.product_name }}</h3>
-        <p class="text-sm opacity-70">{{ product.manufacturer }}</p>
-      </div>
-    </div>
+     <div class="product-info text-center mt-3">
+  <h3 class="text-lg font-bold">{{ product.product_name }}</h3>
+  <p class="text-sm opacity-70">{{ product.manufacturer }}</p>
+
+  <p class="product-description text-sm opacity-70" data-fulltext="{{ product.description }}">
+    {{ product.description }}
+  </p>
+
+  <button class="read-more-btn text-blue-400 text-xs mt-1 hidden">Read More</button>
+</div>
+ </div>
     {% endfor %}
-  </div>
+ 
 
   {% else %}
   <div class="neo-card text-center py-16">
@@ -184,6 +204,33 @@
       });
     });
   })();
+
+  document.querySelectorAll(".product-description").forEach(desc => {
+    const fullText = desc.dataset.fulltext.trim();
+
+    // If text is long, show button
+    if (fullText.length > 120) {
+        const btn = desc.parentElement.querySelector(".read-more-btn");
+        btn.classList.remove("hidden");
+
+        btn.addEventListener("click", () => {
+            if (desc.classList.contains("expanded")) {
+                // Collapse
+                desc.classList.remove("expanded");
+                desc.textContent = fullText.slice(0, 120) + "...";
+                btn.textContent = "Read More";
+            } else {
+                // Expand
+                desc.classList.add("expanded");
+                desc.textContent = fullText;
+                btn.textContent = "Read Less";
+            }
+        });
+
+        // Initial truncated text
+        desc.textContent = fullText.slice(0, 120) + "...";
+    }
+});
 </script>
 {% endblock %}
 

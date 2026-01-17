@@ -5,7 +5,6 @@ import uuid
 
 User = get_user_model()
 
-# ✅ Define this BEFORE the Product model
 def generate_serial():
     return str(uuid.uuid4())
 
